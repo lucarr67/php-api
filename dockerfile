@@ -1,11 +1,17 @@
-# Usa l'immagine ufficiale di PHP con Apache
+# Usa una base image che supporta PHP
 FROM php:7.4-apache
 
-# Abilita mod_rewrite per Apache (necessario per alcuni framework PHP)
-RUN a2enmod rewrite
+# Installa le estensioni necessarie per PHP (incluso mysqli)
+RUN docker-php-ext-install mysqli
 
-# Copia i file del tuo progetto nella cartella /var/www/html di Apache
+# Copia i file nella directory /var/www/html di Apache
 COPY . /var/www/html/
 
-# Espone la porta 80 (porta HTTP di Apache)
+# Abilita il mod_rewrite di Apache (se necessario)
+RUN a2enmod rewrite
+
+# Espone la porta 80 per il server web
 EXPOSE 80
+
+# Configura Apache per servirlo
+CMD ["apache2-foreground"]
