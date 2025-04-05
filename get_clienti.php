@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 }
 
 // Query per ottenere i dati
-$sql = "SELECT * FROM clifor order by RagSoc1";
+$sql = "SELECT * FROM clifor where obsoleto = 0 order by RagSoc1";
 $result = $conn->query($sql);
 
 $data = [];
