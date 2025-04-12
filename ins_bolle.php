@@ -7,45 +7,53 @@ $password = getenv('AIVEN_PASSWORD');
 
 // Connessione al database
 $conn = new mysqli($host, $username, $password, $dbname, $port);
+
 if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Connessione fallita: " . $conn->connect_error]));
 }
 
-// Imposta header per ricevere JSON
-header("Content-Type: application/json");
-$input = json_decode(file_get_contents("php://input"), true);
+// Ricevi i dati tramite POST
+$data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($input["righe"])) {
-    echo json_encode(["status" => "error", "message" => "Dati non ricevuti."]);
-    exit;
-}
+if (isset($data["serie"]) && isset($data["numero"]) && isset($data["riga"]) && isset($data["data"]) && isset($data["ora"]) && isset($data["codcli"]) && isset($data["ragsoc"]) && isset($data["indirizzo"]) && isset($data["citta"]) && isset($data["provincia"]) && isset($data["cap"]) && isset($data["numfatt"]) && isset($data["datafatt"]) && isset($data["piva"]) && isset($data["codart"]) && isset($data["desart"]) && isset($data["um"]) && isset($data["qta"]) && isset($data["przuni"]) && isset($data["iva"]) && isset($data["totriga"]) && isset($data["caumag"])) {
 
-// Inizio transazione
-$conn->begin_transaction();
-try {
-    $stmt = $conn->prepare("INSERT INTO bolle 
-        (serie, numero, riga, data, ora, codcli, ragsoc, indirizzo, citta, provincia, cap, numfatt, datafatt, piva, codart, desart, um, qta, przuni, iva, totriga, caumag) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    // Estrai i dati
+    $serie = $data["serie"];
+    $numero = $data["numero"];
+    $riga = $data["riga"];
+    $data = $data["data"];
+    $ora = $data["ora"];
+    $codcli = $data["codcli"];
+    $ragsoc = $data["ragsoc"];
+    $indirizzo = $data["indirizzo"];
+    $citta = $data["citta"];
+    $provincia = $data["provincia"];
+    $cap = $data["cap"];
+    $numfatt = $data["numfatt"];
+    $datafatt = $data["datafatt"];
+    $piva = $data["piva"];
+    $codart = $data["codart"];
+    $desart = $data["desart"];
+    $um = $data["um"];
+    $qta = $data["qta"];
+    $przuni = $data["przuni"];
+    $iva = $data["iva"];
+    $totriga = $data["totriga"];
+    $caumag = $data["caumag"];
 
-    foreach ($input["righe"] as $r) {
-        $stmt->bind_param(
-            "siissssssssssssssddds",
-            $r["serie"], $r["numero"], $r["riga"], $r["data"], $r["ora"],
-            $r["codcli"], $r["ragsoc"], $r["indirizzo"], $r["citta"], $r["provincia"], $r["cap"],
-            $r["numfatt"], $r["datafatt"], $r["piva"], $r["codart"], $r["desart"], $r["um"],
-            $r["qta"], $r["przuni"], $r["iva"], $r["totriga"], $r["caumag"]
-        );
-        $stmt->execute();
+    // Prepara la query SQL per inserire i dati
+    $sql = "INSERT INTO bolle (serie, numero, riga, data, ora, codcli, ragsoc, indirizzo, citta, provincia, cap, numfatt, datafatt, piva, codart, desart, um, qta, przuni, iva, totriga, caumag)
+            VALUES ('$serie', '$numero', '$riga', '$data', '$ora', '$codcli', '$ragsoc', '$indirizzo', '$citta', '$provincia', '$cap', '$numfatt', '$datafatt', '$piva', '$codart', '$desart', '$um', '$qta', '$przuni', '$iva', '$totriga', '$caumag')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(["status" => "success", "message" => "Riga bolla inserita correttamente."]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Errore nell'inserimento: " . $conn->error]);
     }
 
-    $conn->commit();
-    echo json_encode(["status" => "success", "message" => "Righe inserite correttamente."]);
-
-} catch (Exception $e) {
-    $conn->rollback();
-    echo json_encode(["status" => "error", "message" => "Errore durante l'inserimento: " . $e->getMessage()]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Dati incompleti."]);
 }
 
-$stmt->close();
 $conn->close();
 ?>
