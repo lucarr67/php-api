@@ -17,7 +17,7 @@ $codice = isset($_GET['codice']) ? $conn->real_escape_string($_GET['codice']) : 
 
 // Costruzione query dinamica
 if ($codice) {
-    $sql = "SELECT * FROM clifor WHERE obsoleto = 0 AND codice = '$codice' ORDER BY RagSoc1";
+    $sql = "SELECT * FROM clifor WHERE codice = '$codice' ORDER BY RagSoc1";
 } else {
     $sql = "SELECT * FROM clifor WHERE obsoleto = 0 ORDER BY RagSoc1";
 }
