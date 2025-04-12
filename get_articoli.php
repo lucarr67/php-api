@@ -12,12 +12,20 @@ if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Connessione fallita: " . $conn->connect_error]));
 }
 
-// Query per ottenere i dati
-$sql = "SELECT * FROM articoli order by codart";
+// Recupera il parametro 'codart' dalla query string
+$codart = isset($_GET['codart']) ? $conn->real_escape_string($_GET['codart']) : null;
+
+// Costruzione query dinamica
+if ($codart) {
+    $sql = "SELECT * FROM articoli WHERE codart = '$codart' ORDER BY codart";
+} else {
+    $sql = "SELECT * FROM articoli ORDER BY codart";
+}
+
 $result = $conn->query($sql);
 
 $data = [];
-if ($result->num_rows > 0) {
+if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $data[] = $row;
     }
