@@ -24,9 +24,7 @@ if ($conn->connect_error) {
         echo json_encode(["status" => "error", "message" => "Errore nell'inserimento: " . $conn->error]);
     }
 
-} else {
-    echo json_encode(["status" => "error", "message" => "Dati incompleti."]);
-}
+
 
 $conn->close();
 ?>
