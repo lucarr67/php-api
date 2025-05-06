@@ -1,4 +1,7 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+
 $host = "mysql-15764f65-albalatte-mysql.b.aivencloud.com";
 $port = "25265";
 $dbname = "bolle_test";
