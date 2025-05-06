@@ -1,7 +1,7 @@
 <?php
 $host = "mysql-15764f65-albalatte-mysql.b.aivencloud.com";
 $port = "25265";
-$dbname = "bolle";
+$dbname = "bolle_test";
 $username = "avnadmin";
 $password = getenv('AIVEN_PASSWORD');
 
