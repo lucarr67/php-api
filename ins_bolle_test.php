@@ -12,8 +12,6 @@ if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Connessione fallita: " . $conn->connect_error]));
 }
 
-
-
     // Prepara la query SQL per inserire i dati
     $sql = "INSERT INTO bolle (serie, numero, riga, data)
             VALUES ('1', '1', '1', '1')";
@@ -23,8 +21,6 @@ if ($conn->connect_error) {
     } else {
         echo json_encode(["status" => "error", "message" => "Errore nell'inserimento: " . $conn->error]);
     }
-
-
 
 $conn->close();
 ?>
